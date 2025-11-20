@@ -1,7 +1,21 @@
 export enum AppMode {
   VARIATIONS = 'VARIATIONS', // Mode 1: 5 ways to say it
   CONTEXT = 'CONTEXT',       // Mode 2: 5 sentences using the word
+  PARAPHRASE = 'PARAPHRASER'  // Mode 3: Rephrase source or target with specific tones
 }
+
+export enum ParaphraseTone {
+  STANDARD = 'Standard',
+  FLUENCY = 'Fluency',
+  FORMAL = 'Formal',
+  ACADEMIC = 'Academic',
+  SIMPLE = 'Simple',
+  CREATIVE = 'Creative',
+  EXPAND = 'Expand',
+  SHORTEN = 'Shorten'
+}
+
+export type ModelType = 'fast' | 'accurate';
 
 export interface Language {
   code: string;
@@ -21,6 +35,8 @@ export const SUPPORTED_LANGUAGES: Language[] = [
   { code: 'ar', name: 'Arabic' },
 ];
 
+export const PARAPHRASE_TONES = Object.values(ParaphraseTone);
+
 // API Response Types
 export interface VariationResult {
   variations: string[];
@@ -35,6 +51,11 @@ export interface ContextResult {
   examples: ContextExample[];
 }
 
+export interface ParaphraseState {
+  sourceText: string;
+  targetText: string;
+}
+
 export interface HistoryItem {
   id: string;
   timestamp: number;
@@ -42,6 +63,8 @@ export interface HistoryItem {
   sourceLang: string;
   targetLang: string;
   inputText: string;
+  modelType?: ModelType;
   variationResults?: string[];
   contextResults?: ContextExample[];
+  paraphraseResult?: ParaphraseState; // For history restoration
 }

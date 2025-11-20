@@ -1,16 +1,21 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { ContextResult, VariationResult } from "../types";
+import { ContextResult, VariationResult, ModelType } from "../types";
 
 // Initialize Gemini Client
 // Note: process.env.API_KEY is guaranteed to be available by the environment
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-const MODEL_NAME = 'gemini-3-pro-preview';
+const getModelName = (type: ModelType) => {
+  // Fast -> gemini-2.5-flash (standard high speed)
+  // Accurate -> gemini-3-pro-preview (complex reasoning/best quality)
+  return type === 'accurate' ? 'gemini-3-pro-preview' : 'gemini-2.5-flash';
+};
 
 export const generateVariations = async (
   sourceLang: string,
   targetLang: string,
-  text: string
+  text: string,
+  modelType: ModelType
 ): Promise<string[]> => {
   try {
     const prompt = `Translate the following text from ${sourceLang} to ${targetLang}. 
@@ -18,7 +23,7 @@ export const generateVariations = async (
     The input text is: "${text}"`;
 
     const response = await ai.models.generateContent({
-      model: MODEL_NAME,
+      model: getModelName(modelType),
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -47,7 +52,8 @@ export const generateVariations = async (
 export const generateContextExamples = async (
   sourceLang: string,
   targetLang: string,
-  word: string
+  word: string,
+  modelType: ModelType
 ): Promise<ContextExample[]> => {
   try {
     // For context mode: Input is in Source Lang (e.g., English 'Silly'). 
@@ -57,7 +63,7 @@ export const generateContextExamples = async (
     Make the sentences diverse in context (e.g., casual, professional, emotional).`;
 
     const response = await ai.models.generateContent({
-      model: MODEL_NAME,
+      model: getModelName(modelType),
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -88,6 +94,51 @@ export const generateContextExamples = async (
     throw error;
   }
 };
+
+export const simpleTranslate = async (
+  sourceLang: string,
+  targetLang: string,
+  text: string,
+  modelType: ModelType
+): Promise<string> => {
+  try {
+    const prompt = `Translate the following text from ${sourceLang} to ${targetLang}. Return ONLY the translated text without any explanation. Text: "${text}"`;
+    
+    const response = await ai.models.generateContent({
+      model: getModelName(modelType),
+      contents: prompt,
+    });
+
+    return response.text?.trim() || "";
+  } catch (error) {
+    console.error("Error translating text:", error);
+    throw error;
+  }
+};
+
+export const rephraseText = async (
+  language: string,
+  text: string,
+  tone: string,
+  modelType: ModelType
+): Promise<string> => {
+  try {
+    const prompt = `Rewrite the following text in ${language}.
+    Tone/Style: ${tone}.
+    Input text: "${text}".
+    Return ONLY the rewritten text without quotation marks or explanations.`;
+
+    const response = await ai.models.generateContent({
+      model: getModelName(modelType),
+      contents: prompt,
+    });
+
+    return response.text?.trim() || "";
+  } catch (error) {
+    console.error("Error rephrasing text:", error);
+    throw error;
+  }
+}
 
 // Type definition needed locally to avoid circular dependency if we put it in types.ts and imported here
 interface ContextExample {

@@ -1,5 +1,5 @@
 {
   "name": "LinguistAI",
-  "description": "A minimalist language learning assistant powered by Gemini 3. It offers two modes: generating 5 translation variations for a phrase, or creating contextual sentences for a specific word.",
+  "description": "A minimalist language learning assistant powered by DLM. It offers two modes: generating 5 translation variations for a phrase, or creating contextual sentences for a specific word.",
   "requestFramePermissions": []
 }
