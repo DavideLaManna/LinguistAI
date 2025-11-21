@@ -25,7 +25,7 @@ const App: React.FC = () => {
   const [isTypingLeft, setIsTypingLeft] = useState<boolean>(false);
   const [isTypingRight, setIsTypingRight] = useState<boolean>(false);
   const [isTranslatingPara, setIsTranslatingPara] = useState<boolean>(false);
-  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Tones for Paraphrase
   const [leftTone, setLeftTone] = useState<ParaphraseTone>(ParaphraseTone.STANDARD);

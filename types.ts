@@ -1,3 +1,4 @@
+
 export enum AppMode {
   VARIATIONS = 'VARIATIONS', // Mode 1: 5 ways to say it
   CONTEXT = 'CONTEXT',       // Mode 2: 5 sentences using the word
@@ -33,6 +34,7 @@ export const SUPPORTED_LANGUAGES: Language[] = [
   { code: 'zh', name: 'Chinese' },
   { code: 'ru', name: 'Russian' },
   { code: 'ar', name: 'Arabic' },
+  { code: 'mt', name: 'Maltese' },
 ];
 
 export const PARAPHRASE_TONES = Object.values(ParaphraseTone);
